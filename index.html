@@ -164,8 +164,19 @@
               <label class="form-check-label" for="shuffle-checkbox">Shuffle images</label>
             </div>
           </div>
+
+          <div id="settings-import" class="form-group has-feedback">
+            <label class="control-label col-xs-4" for="settings-input">Settings import:</label>
+            <div class="col-xs-8">
+              <input class="form-control" id="settings-import" type="text">
+              <small id="settings-import-help" class="form-text text-muted">
+                You can paste here a link with settings to automatically apply them
+              </small>
+            </div>
+          </div>
+
           <div id="beats-group" class="form-group has-feedback">
-            <label class="control-label col-xs-4" or="beats-input">BPM:</label>
+            <label class="control-label col-xs-4" for="beats-input">BPM:</label>
             <div class="col-xs-8">
               <input class="form-control" id="beats-input" type="number">
               <small id="beats-help" class="form-text text-muted">
@@ -245,6 +256,45 @@
     };
     // load args
     sissy.args = parseArgs();
+
+    document.getElementById("settings-import").addEventListener("change", function (event) {
+      var linkWithSettings = event.target.value;
+      arr_linkWithSettings = linkWithSettings.split("?");
+      tempArray = arr_linkWithSettings[arr_linkWithSettings.length - 1].split("&");
+      var args = [];
+      for (var i = 0; i < tempArray.length; i++) {
+        var temp = tempArray[i].split("=");
+        args[encodeURI(decodeURI(temp[0]))] = encodeURI(decodeURI(temp[1]));
+      }
+      sissy.args = args;
+      var args_shuffle = parseInt(sissy.args["shuffle"]);
+      if (args_shuffle) {
+        if (args_shuffle == 1) {
+          sissy.shuffleCheckbox.checked = true;
+        }
+        else {
+          //not working for =0 for some reason 
+          sissy.shuffleCheckbox.checked = false;
+        }
+      }
+      var args_beats = parseInt(sissy.args["bpm"]);
+      if (args_beats) {
+        sissy.beatsInput.value = args_beats;
+        sissy.beatsInput.dispatchEvent(new Event("change"));
+      }
+      var args_next = parseInt(sissy.args["next"]);
+      if (args_next) {
+        sissy.nextInput.value = args_next;
+        sissy.nextInput.dispatchEvent(new Event("change"));
+      }
+      var args_limit = parseInt(sissy.args["limit"]);
+      if (args_limit) {
+        sissy.limitInput.value = args_limit;
+        sissy.limitInput.dispatchEvent(new Event("change"));
+      }
+      feedbackOK(document.getElementById("settings-import"))
+    }, false);
+
 
     // Load some nodes
     sissy.authorizeButton = document.getElementById("authorize-button");

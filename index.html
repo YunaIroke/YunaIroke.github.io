@@ -274,11 +274,11 @@
           args[escapeHtml(unescape(temp[0]))] = escapeHtml(unescape(temp[1]));
         }
       }
-      console.log(window.location.search)
       return args;
     };
     // load args
     sissy.args = parseArgs();
+    console.log(sissy.args)
 
     document.getElementById("settings-import").addEventListener("change", function (event) {
       var linkWithSettings = event.target.value;

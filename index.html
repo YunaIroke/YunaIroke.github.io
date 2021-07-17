@@ -317,11 +317,13 @@
       feedbackOK(document.getElementById("settings-import"))
     }, false);
 
+    /*
     document.getElementById("mantra-input").addEventListener("change", function (event) {
       document.getElementById("mantra").innerText = event.target.value;
       feedbackOK(document.getElementById("mantra-group"))
     }, false);
 
+    */
     // Load some nodes
     sissy.authorizeButton = document.getElementById("authorize-button");
     //sissy.signoutButton = document.getElementById("signout-button");
@@ -334,6 +336,7 @@
     sissy.startButton = document.getElementById("start-button");
     sissy.startHelp = document.getElementById("start-help");
     sissy.tickSound = new Howl({ src: ["tick.mp3"] });
+    sissy.mantra = document.getElementById("mantra-input");
 
     /**
      *  On load, called to load the auth2 library and API client library.
@@ -771,6 +774,10 @@
         clearStartHelp();
       }
     };
+    sissy.mantra.onchange = function (event) {
+      document.getElementById("mantra").innerText = event.target.value;
+      feedbackOK(document.getElementById("mantra-group"))
+    }
 
     // set defaults
     sissy.limitInput.value = 0;

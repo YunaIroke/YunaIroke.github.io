@@ -75,6 +75,17 @@
       background-size: 80px 40px;
     }
 
+    .mantra {
+      color: #f15aff;
+      font-size: x-large;
+      z-index: 50;
+      text-shadow: 2px 0 0 #fff, -2px 0 0 #fff, 0 2px 0 #fff, 0 -2px 0 #fff, 1px 1px #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff;
+      position: absolute;
+      text-align: center;
+      left: 50%;
+      transform: translateX(-50%)
+    }
+
     #blueimp-gallery.blueimp-gallery-playing>.play-pause {
       background-position: -40px 0;
     }
@@ -205,6 +216,16 @@
               <span class="hidden glyphicon form-control-feedback"></span>
             </div>
           </div>
+          <div id="mantra-group" class="form-group has-feedback">
+            <label class="control-label col-xs-4" for="mantra-input">Mantra:</label>
+            <div class="col-xs-8">
+              <input class="form-control" id="mantra-input" type="text">
+              <small id="mantra-help" class="form-text text-muted">
+                You can put here mantra, it will be displayed on top of the page
+              </small>
+              <span class="hidden glyphicon form-control-feedback"></span>
+            </div>
+          </div>
         </form>
         <button id="start-button" class="btn btn-primary">Start</button>
         <br><br>
@@ -214,6 +235,7 @@
   </div>
 
   <div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls">
+    <b class="mantra container-fluid text-center" id=mantra> </b>
     <div class="slides"></div>
     <a class="prev">‹</a>
     <a class="next">›</a>
@@ -295,6 +317,10 @@
       feedbackOK(document.getElementById("settings-import"))
     }, false);
 
+    document.getElementById("mantra-input").addEventListener("change", function (event) {
+      document.getElementById("mantra").innerText = event.target.value;
+      feedbackOK(document.getElementById("mantra-group"))
+    }, false);
 
     // Load some nodes
     sissy.authorizeButton = document.getElementById("authorize-button");

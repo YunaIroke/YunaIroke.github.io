@@ -259,6 +259,7 @@
     // Namespace
     var sissy = {};
 
+    /*
     function escapeHtml(str) {
       var div = document.createElement("div");
       div.appendChild(document.createTextNode(str));
@@ -276,9 +277,19 @@
       }
       return args;
     };
+    */
     // load args
-    sissy.args = parseArgs();
-    console.log(sissy.args)
+    function parseArgs(url_txt) {
+      var url = new URL(url_txt);
+      searchParams = url.searchParams;
+      var args = [];
+      for (var pair of searchParams.entries()) {
+        args[pair[0]] = pair[1];
+      }
+      return args
+    }
+
+    sissy.args = parseArgs(window.location.href);
 
     document.getElementById("settings-import").addEventListener("change", function (event) {
       var linkWithSettings = event.target.value;
@@ -323,7 +334,7 @@
       document.getElementById("mantra").innerText = event.target.value;
       feedbackOK(document.getElementById("mantra-group"))
     }, false);
-
+ 
     */
     // Load some nodes
     sissy.authorizeButton = document.getElementById("authorize-button");
@@ -338,6 +349,7 @@
     sissy.startHelp = document.getElementById("start-help");
     sissy.tickSound = new Howl({ src: ["tick.mp3"] });
     sissy.mantra = document.getElementById("mantra-input");
+    sissy.settingsImport = document.getElementById("settings-import")
 
     /**
      *  On load, called to load the auth2 library and API client library.
@@ -346,7 +358,7 @@
     function handleClientLoad() {
       // Load all used google javascript libs
       gapi.load("client:auth2:signin2", function () {
-
+ 
         // render google design guidlines compliant log in button
         gapi.signin2.render("authorize-button", {
           scope: SCOPES,
@@ -355,7 +367,7 @@
           longtitle: true,
           theme: "light",
           onsuccess: function () {
-
+ 
             // Init the drive client after succesfull login
             gapi.client.init({
               // clientId & scope are now handled by signin2. If the are uncommented here this silently fails 
@@ -365,14 +377,14 @@
             }).then(function () {
               // Listen for sign-in state changes.
               gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
-
+ 
               // Handle the initial sign-in state.
               updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
             });
           }
         });
-
-
+ 
+ 
       });
     }
     */
@@ -387,7 +399,7 @@
         sissy.authorizeButton.classList.add("hidden");
         sissy.signoutButton.classList.remove("hidden");
         sissy.settings.classList.remove("hidden");
-
+ 
         // load folders to folder-select
         listFolders();
       } else {
@@ -424,26 +436,26 @@
           if (sissy.args["folder"]) {
             default_folder_name = sissy.args["folder"];
           }
-
+ 
           if (folders && folders.length > 0) {
             for (var i = 0; i < folders.length; i++) {
-
+ 
               var option = document.createElement("option");
               option.value = folders[i].id;
               option.innerHTML = folders[i].name;
               sissy.folderSelect.appendChild(option);
-
-
+ 
+ 
               if (folders[i].name.toLowerCase() == default_folder_name.toLowerCase()) {
                 default_folder = folders[i];
               }
             }
-
+ 
             if (default_folder) {
               sissy.folderSelect.value = default_folder.id;
               listFiles(default_folder.id);
             }
-
+ 
             sissy.folderSelect.onchange = function () {
               listFiles(sissy.folderSelect.value);
             }
@@ -475,7 +487,7 @@
     /*
     function listFiles(folderId) {
       sissy.urls = [];
-
+ 
       gapi.client.drive.files.list({
         'q': "trashed=false and '" + folderId + "' in parents and mimeType != 'application/vnd.google-apps.folder' and mimeType != 'application/vnd.google-apps.drive-sdk'",
         'fields': "files(id, name)",
@@ -484,23 +496,23 @@
         if (!response.error) {
           var files = response.result.files;
           if (files && files.length > 0) {
-
+ 
             for (var i = 0; i < files.length; i++) {
               sissy.urls.push("https://lh3.google.com/d/" + files[i].id);
             }
-
+ 
             document.getElementById("folder-help").innerHTML = "Loaded " + sissy.urls.length + " images.";
-
+ 
             if (sissy.urls.length > 0) {
               feedbackOK(document.getElementById("folder-group"));
             }
-
+ 
             // start autoplay timeout after successful image loading
             var args_autoplay = parseInt(sissy.args["autoplay"]);
             if (args_autoplay >= 0) {
               setTimeout(start, args_autoplay * 1000);
             }
-
+ 
             updateStartHelp();
           } else {
             feedbackError(document.getElementById("folder-group"));
@@ -516,7 +528,7 @@
         document.getElementById("folder-help").innerHTML = "Failed to fetch files.";
       });
     }
-
+ 
     */
 
     function showOptions() {

@@ -93,17 +93,6 @@
     .policy {
       font-size: 75%;
     }
-
-    #authorize-button {
-      display: inline-block;
-      /*        width: 240px;
-        height: 50px;
-        background-image: url("btn_google_signin_light_normal_web.png");*/
-    }
-
-    /*      #authorize-button:hover{
-        background-image: url("btn_google_signin_light_focus_web.png");
-      }*/
   </style>
 </head>
 
@@ -143,14 +132,6 @@
           href="?bpm=100&next=5&shuffle=1&mantra=I know I want this">/?bpm=100&amp;next=5&amp;shuffle=1&amp;mantra=I
           know I want this</a></p>
     </div>
-    <!--
-    <div class="row">
-      <div id="login-logout" class="col-xs-12">
-        <div id="authorize-button"></div>
-        <button id="signout-button" class="btn btn-primary hidden" onclick="handleSignoutClick()">Sign Out</button>
-      </div>
-    </div>
-    -->
 
     <div class="row">
       <div id="settings" class="col-xs-12 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
@@ -171,15 +152,6 @@
               <input type="file" id="folder-SelectAll" class="form-control has-feedback" multiple />
               <small id="folder-SelectAll-help" class="form-text text-muted">
                 select all files, works on mobiles
-              </small>
-              <span class="hidden glyphicon form-control-feedback"></span>
-            </div>
-
-            <label class="control-label col-xs-4" for="folder-YDLink">Provide link to YD shared folder:</label>
-            <div class="col-xs-8">
-              <input type="text" id="folder-YDLink" class="form-control has-feedback" />
-              <small id="folder-YDLink" class="form-text text-muted">
-                Loaded from link: <b id="YD-loaded">0</b>
               </small>
               <span class="hidden glyphicon form-control-feedback"></span>
             </div>
@@ -259,40 +231,9 @@
   </div>
 
   <script type="text/javascript">
-    /*
-    // Client ID and API key from the Developer Console
-    var CLIENT_ID = "180558660158-79v5qhc91h84hotb3526l7t3co9n7qu7.apps.googleusercontent.com";
 
-    // Array of API discovery doc URLs for APIs
-    var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
-
-    // Authorization scopes required by the API; multiple scopes can be
-    // included, separated by spaces.
-    var SCOPES = "https://www.googleapis.com/auth/drive.metadata.readonly";
-    */
-    // Namespace
     var sissy = {};
 
-    /*
-    function escapeHtml(str) {
-      var div = document.createElement("div");
-      div.appendChild(document.createTextNode(str));
-      return div.innerHTML;
-    };
-
-    function parseArgs() {
-      var args = [];
-      if (window.location.search != "") {
-        var tempArray = window.location.search.substring(1).split("&");
-        for (var i = 0; i < tempArray.length; i++) {
-          var temp = tempArray[i].split("=");
-          args[escapeHtml(unescape(temp[0]))] = escapeHtml(unescape(temp[1]));
-        }
-      }
-      return args;
-    };
-    */
-    // load args
     function parseArgs(url_txt, fromSearchBox = false) {
       if (!fromSearchBox) {
         tmp = url_txt.split("?");
@@ -344,57 +285,7 @@
       }
 
     }
-
-    /*
-    document.getElementById("settings-import").addEventListener("change", function (event) {
-      var linkWithSettings = event.target.value;
-      arr_linkWithSettings = linkWithSettings.split("?");
-      tempArray = arr_linkWithSettings[arr_linkWithSettings.length - 1].split("&");
-      var args = [];
-      for (var i = 0; i < tempArray.length; i++) {
-        var temp = tempArray[i].split("=");
-        args[encodeURI(decodeURI(temp[0]))] = encodeURI(decodeURI(temp[1]));
-      }
-      sissy.args = args;
-      var args_shuffle = parseInt(sissy.args["shuffle"]);
-      if (args_shuffle) {
-        if (args_shuffle == 1) {
-          sissy.shuffleCheckbox.checked = true;
-        }
-        else {
-          //not working for =0 for some reason 
-          sissy.shuffleCheckbox.checked = false;
-        }
-      }
-      var args_beats = parseInt(sissy.args["bpm"]);
-      if (args_beats) {
-        sissy.beatsInput.value = args_beats;
-        sissy.beatsInput.dispatchEvent(new Event("change"));
-      }
-      var args_next = parseInt(sissy.args["next"]);
-      if (args_next) {
-        sissy.nextInput.value = args_next;
-        sissy.nextInput.dispatchEvent(new Event("change"));
-      }
-      var args_limit = parseInt(sissy.args["limit"]);
-      if (args_limit) {
-        sissy.limitInput.value = args_limit;
-        sissy.limitInput.dispatchEvent(new Event("change"));
-      }
-      feedbackOK(document.getElementById("settings-import"))
-    }, false);
-    */
-
-    /*
-    document.getElementById("mantra-input").addEventListener("change", function (event) {
-      document.getElementById("mantra").innerText = event.target.value;
-      feedbackOK(document.getElementById("mantra-group"))
-    }, false);
- 
-    */
     // Load some nodes
-    sissy.authorizeButton = document.getElementById("authorize-button");
-    //sissy.signoutButton = document.getElementById("signout-button");
     sissy.settings = document.getElementById("settings");
     sissy.folderSelect = document.getElementById("folder-select");
     sissy.shuffleCheckbox = document.getElementById("shuffle-checkbox");
@@ -407,186 +298,6 @@
     sissy.mantraInput = document.getElementById("mantra-input");
     sissy.mantraValue = document.getElementById("mantra")
     sissy.settingsImport = document.getElementById("settings-import")
-
-    /**
-     *  On load, called to load the auth2 library and API client library.
-     */
-    /*
-    function handleClientLoad() {
-      // Load all used google javascript libs
-      gapi.load("client:auth2:signin2", function () {
- 
-        // render google design guidlines compliant log in button
-        gapi.signin2.render("authorize-button", {
-          scope: SCOPES,
-          width: 200,
-          height: 40,
-          longtitle: true,
-          theme: "light",
-          onsuccess: function () {
- 
-            // Init the drive client after succesfull login
-            gapi.client.init({
-              // clientId & scope are now handled by signin2. If the are uncommented here this silently fails 
-              // clientId: CLIENT_ID,
-              // scope: SCOPES,
-              discoveryDocs: DISCOVERY_DOCS
-            }).then(function () {
-              // Listen for sign-in state changes.
-              gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
- 
-              // Handle the initial sign-in state.
-              updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-            });
-          }
-        });
- 
- 
-      });
-    }
-    */
-    /**
-     *  Called when the signed in status changes, to update the UI
-     *  appropriately. After a sign-in, the API is called.
-     */
-
-    /*
-     function updateSigninStatus(isSignedIn) {
-      if (isSignedIn) {
-        sissy.authorizeButton.classList.add("hidden");
-        sissy.signoutButton.classList.remove("hidden");
-        sissy.settings.classList.remove("hidden");
- 
-        // load folders to folder-select
-        listFolders();
-      } else {
-        sissy.authorizeButton.classList.remove("hidden");
-        sissy.signoutButton.classList.add("hidden");
-        sissy.settings.classList.add("hidden");
-      }
-    }
-    */
-    /**
-     *  Sign out the user upon button click.
-     */
-    /*
-     function handleSignoutClick(event) {
-      console.log("sign out called");
-      // does not work for some reason
-      gapi.auth2.getAuthInstance().signOut();
-    }
-    */
-    /**
-    * List all Google Drive folders in folder-select
-    */
-
-    /*
-    function listFolders() {
-      gapi.client.drive.files.list({
-        "q": "mimeType contains 'application/vnd.google-apps.folder' and trashed=false",
-        "fields": "files(id, name)"
-      }).then(function (response) {
-        if (!response.error) {
-          var folders = response.result.files;
-          var default_folder;
-          var default_folder_name = "orgasm diet";
-          if (sissy.args["folder"]) {
-            default_folder_name = sissy.args["folder"];
-          }
- 
-          if (folders && folders.length > 0) {
-            for (var i = 0; i < folders.length; i++) {
- 
-              var option = document.createElement("option");
-              option.value = folders[i].id;
-              option.innerHTML = folders[i].name;
-              sissy.folderSelect.appendChild(option);
- 
- 
-              if (folders[i].name.toLowerCase() == default_folder_name.toLowerCase()) {
-                default_folder = folders[i];
-              }
-            }
- 
-            if (default_folder) {
-              sissy.folderSelect.value = default_folder.id;
-              listFiles(default_folder.id);
-            }
- 
-            sissy.folderSelect.onchange = function () {
-              listFiles(sissy.folderSelect.value);
-            }
-          } else {
-            feedbackError(document.getElementById("folder-group"));
-            document.getElementById("folder-help").innerHTML = "Found no folders.";
-            var option = document.createElement("option");
-            option.innerHTML = "Found no folders";
-            sissy.folderSelect.appendChild(option);
-          }
-        } else {
-          feedbackError(document.getElementById("folder-group"));
-          document.getElementById("folder-help").innerHTML = "Failed to fetch folders. Error: " + response.error;
-          var option = document.createElement("option");
-          option.innerHTML = "Failed to fetch folders";
-          sissy.folderSelect.appendChild(option);
-          console.error(response.error);
-        }
-      }, function () {
-        feedbackError(document.getElementById("folder-group"));
-        document.getElementById("folder-help").innerHTML = "Failed to fetch folders.";
-      });
-    }
-    */
-    /**
-    * Load all files of a google drive folder and init blueimp gallery
-    */
-
-    /*
-    function listFiles(folderId) {
-      sissy.urls = [];
- 
-      gapi.client.drive.files.list({
-        'q': "trashed=false and '" + folderId + "' in parents and mimeType != 'application/vnd.google-apps.folder' and mimeType != 'application/vnd.google-apps.drive-sdk'",
-        'fields': "files(id, name)",
-        'pageSize': 1000
-      }).then(function (response) {
-        if (!response.error) {
-          var files = response.result.files;
-          if (files && files.length > 0) {
- 
-            for (var i = 0; i < files.length; i++) {
-              sissy.urls.push("https://lh3.google.com/d/" + files[i].id);
-            }
- 
-            document.getElementById("folder-help").innerHTML = "Loaded " + sissy.urls.length + " images.";
- 
-            if (sissy.urls.length > 0) {
-              feedbackOK(document.getElementById("folder-group"));
-            }
- 
-            // start autoplay timeout after successful image loading
-            var args_autoplay = parseInt(sissy.args["autoplay"]);
-            if (args_autoplay >= 0) {
-              setTimeout(start, args_autoplay * 1000);
-            }
- 
-            updateStartHelp();
-          } else {
-            feedbackError(document.getElementById("folder-group"));
-            document.getElementById("folder-help").innerHTML = "No files in folder.";
-          }
-        } else {
-          feedbackError(document.getElementById("folder-group"));
-          document.getElementById("folder-help").innerHTML = "Failed to fetch files. Error: " + response.error;
-          console.error(response.error);
-        }
-      }, function () {
-        feedbackError(document.getElementById("folder-group"));
-        document.getElementById("folder-help").innerHTML = "Failed to fetch files.";
-      });
-    }
- 
-    */
 
     function showOptions() {
       document.getElementById("advancedOptions").classList.add("show");
@@ -762,14 +473,6 @@
       sissy.startHelp.innerHTML = '';
     }
 
-
-    function httpGet(theUrl) {
-      var xmlHttp = new XMLHttpRequest();
-      xmlHttp.open("GET", theUrl, false); // false for synchronous request
-      xmlHttp.send(null);
-      return xmlHttp.responseText;
-    }
-
     document.getElementById("folder").addEventListener("change", function (event) {
       eventID = event.target.id;
       switch (eventID) {
@@ -789,21 +492,6 @@
           }
           else {
             feedbackError(document.getElementById("folder"))
-          }
-          break;
-        case "folder-YDLink":
-          link_for_api = new URL("https://cloud-api.yandex.net/v1/disk/public/resources?limit=1000&public_key=" + event.target.value)
-          response_YD = httpGet(link_for_api)
-          response_YD_parsed = JSON.parse(response_YD)
-          if (response_YD_parsed["error"] == "NotFoundError") {
-            feedbackError(document.getElementById("folder"))
-            document.getElementById("YD-loaded").innerText = "error"
-          }
-          else {
-            tmp = Array.prototype.map.call(response_YD_parsed["_embedded"]["items"], function (x) { return x["file"] })
-            sissy.urls = tmp;
-            feedbackOK(document.getElementById("folder"));
-            document.getElementById("YD-loaded").innerText = sissy.urls.length
           }
           break;
 
@@ -889,35 +577,8 @@
 
     // set options if args are present
     updateFromArgs()
-    /*
-    var args_shuffle = parseInt(sissy.args["shuffle"]);
-    if (args_shuffle) {
-      if (args_shuffle == 1) {
-        sissy.shuffleCheckbox.checked = true;
-      }
-    }
-    var args_beats = parseInt(sissy.args["bpm"]);
-    if (args_beats) {
-      sissy.beatsInput.value = args_beats;
-      sissy.beatsInput.dispatchEvent(new Event("change"));
-    }
-    var args_next = parseInt(sissy.args["next"]);
-    if (args_next) {
-      sissy.nextInput.value = args_next;
-      sissy.nextInput.dispatchEvent(new Event("change"));
-    }
-    var args_limit = parseInt(sissy.args["limit"]);
-    if (args_limit) {
-      sissy.limitInput.value = args_limit;
-      sissy.limitInput.dispatchEvent(new Event("change"));
-    }
-    */
+
   </script>
-  <!--
-  <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()"
-    onreadystatechange="if (this.readyState === 'complete') this.onload()">
-    </script>
-  -->
 </body>
 
 </html>

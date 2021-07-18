@@ -295,6 +295,36 @@
     }
 
     sissy.args = parseArgs(window.location.href, fromSearchBox = true);
+
+    function updateFromArgs() {
+      var args_shuffle = parseInt(sissy.args["shuffle"]);
+      if (args_shuffle) {
+        if (args_shuffle == 1) {
+          sissy.shuffleCheckbox.checked = true;
+        }
+        else {
+          //not working for =0 for some reason 
+          sissy.shuffleCheckbox.checked = false;
+        }
+      }
+      var args_beats = parseInt(sissy.args["bpm"]);
+      if (args_beats) {
+        sissy.beatsInput.value = args_beats;
+        sissy.beatsInput.dispatchEvent(new Event("change"));
+      }
+      var args_next = parseInt(sissy.args["next"]);
+      if (args_next) {
+        sissy.nextInput.value = args_next;
+        sissy.nextInput.dispatchEvent(new Event("change"));
+      }
+      var args_limit = parseInt(sissy.args["limit"]);
+      if (args_limit) {
+        sissy.limitInput.value = args_limit;
+        sissy.limitInput.dispatchEvent(new Event("change"));
+      }
+      feedbackOK(document.getElementById("settings-import"))
+    }
+
     /*
     document.getElementById("settings-import").addEventListener("change", function (event) {
       var linkWithSettings = event.target.value;
@@ -801,31 +831,8 @@
 
       sissy.args = parseArgs(event.target.value);
 
-      var args_shuffle = parseInt(sissy.args["shuffle"]);
-      if (args_shuffle) {
-        if (args_shuffle == 1) {
-          sissy.shuffleCheckbox.checked = true;
-        }
-        else {
-          //not working for =0 for some reason 
-          sissy.shuffleCheckbox.checked = false;
-        }
-      }
-      var args_beats = parseInt(sissy.args["bpm"]);
-      if (args_beats) {
-        sissy.beatsInput.value = args_beats;
-        sissy.beatsInput.dispatchEvent(new Event("change"));
-      }
-      var args_next = parseInt(sissy.args["next"]);
-      if (args_next) {
-        sissy.nextInput.value = args_next;
-        sissy.nextInput.dispatchEvent(new Event("change"));
-      }
-      var args_limit = parseInt(sissy.args["limit"]);
-      if (args_limit) {
-        sissy.limitInput.value = args_limit;
-        sissy.limitInput.dispatchEvent(new Event("change"));
-      }
+      updateFromArgs()
+
       feedbackOK(document.getElementById("settings-import"))
     }
 
@@ -834,6 +841,8 @@
     sissy.limitInput.dispatchEvent(new Event("change"));
 
     // set options if args are present
+    updateFromArgs()
+    /*
     var args_shuffle = parseInt(sissy.args["shuffle"]);
     if (args_shuffle) {
       if (args_shuffle == 1) {
@@ -855,6 +864,7 @@
       sissy.limitInput.value = args_limit;
       sissy.limitInput.dispatchEvent(new Event("change"));
     }
+    */
   </script>
   <!--
   <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()"

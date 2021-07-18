@@ -156,29 +156,34 @@
       <div id="settings" class="col-xs-12 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
         <form class="form-horizontal" autocomplete="off">
           <div id="folder" class="form-group has-feedback">
+
             <label class="control-label col-xs-4" for="folder">Folder:</label>
             <div class="col-xs-8">
-              <!--
-              <select class="form-control" id="folder-select">
-                <option>Select a Google Drive folder...</option>
-              </select>
-              <small id="folder-help" class="form-text text-muted">
-                Select a Google Drive folder...
+              <input type="file" id="folder-SelectFolder" class="form-control has-feedback" webkitdirectory multiple />
+              <small id="folder-SelectAll-help" class="form-text text-muted">
+                just select a folder with images
               </small>
               <span class="hidden glyphicon form-control-feedback"></span>
-              -->
-
-
-              <input type="file" id="folder" class="form-control has-feedback" webkitdirectory multiple />
-              <span class="hidden glyphicon form-control-feedback"></span>
-
             </div>
-            <label class="control-label col-xs-4" for="folder">Manually select all<br>(for phones):</label>
+
+            <label class="control-label col-xs-4" for="folder-SelectAll">Manually select files</label>
             <div class="col-xs-8">
-
-              <input type="file" id="folder" class="form-control has-feedback" multiple />
+              <input type="file" id="folder-SelectAll" class="form-control has-feedback" multiple />
+              <small id="folder-SelectAll-help" class="form-text text-muted">
+                select all files, works on mobiles
+              </small>
               <span class="hidden glyphicon form-control-feedback"></span>
             </div>
+
+            <label class="control-label col-xs-4" for="folder-YDLink">Provide link to YD shared folder:</label>
+            <div class="col-xs-8">
+              <input type="text" id="folder-YDLink" class="form-control has-feedback" />
+              <small id="folder-YDLink" class="form-text text-muted">
+                Loaded from link: <b id="YD-loaded">0</b>
+              </small>
+              <span class="hidden glyphicon form-control-feedback"></span>
+            </div>
+
             <div class="form-check col-xs-8 col-xs-offset-4 text-left">
               <input id="shuffle-checkbox" type="checkbox" class="form-check-input">
               <label class="form-check-label" for="shuffle-checkbox">Shuffle images</label>
@@ -758,24 +763,50 @@
     }
 
 
-
+    function httpGet(theUrl) {
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.open("GET", theUrl, false); // false for synchronous request
+      xmlHttp.send(null);
+      return xmlHttp.responseText;
+    }
 
     document.getElementById("folder").addEventListener("change", function (event) {
-      var files = event.target.files;
+      eventID = event.target.id;
+      switch (eventID) {
+        case "folder-SelectFolder":
+        case "folder-SelectAll":
+          var files = event.target.files;
+          sissy.urls = Array.prototype.map.call(files, function (x) { return URL.createObjectURL(x); });
+          files_count = sissy.urls.length;
+          all_images_flag = true
+          for (var i = 0; i < files.length; i++) {
+            if (!files[i].type.match('image.*')) {
+              all_images_flag = false
+            }
+          }
+          if (files_count > 0 && all_images_flag) {
+            feedbackOK(document.getElementById("folder"));
+          }
+          else {
+            feedbackError(document.getElementById("folder"))
+          }
+          break;
+        case "folder-YDLink":
+          link_for_api = new URL("https://cloud-api.yandex.net/v1/disk/public/resources?limit=1000&public_key=" + event.target.value)
+          response_YD = httpGet(link_for_api)
+          response_YD_parsed = JSON.parse(response_YD)
+          if (response_YD_parsed["error"] == "NotFoundError") {
+            feedbackError(document.getElementById("folder"))
+            document.getElementById("YD-loaded").innerText = "error"
+          }
+          else {
+            tmp = Array.prototype.map.call(response_YD_parsed["_embedded"]["items"], function (x) { return x["file"] })
+            sissy.urls = tmp;
+            feedbackOK(document.getElementById("folder"));
+            document.getElementById("YD-loaded").innerText = sissy.urls.length
+          }
+          break;
 
-      sissy.urls = Array.prototype.map.call(files, function (x) { return URL.createObjectURL(x); });
-      files_count = sissy.urls.length;
-      all_images_flag = true
-      for (var i = 0; i < files.length; i++) {
-        if (!files[i].type.match('image.*')) {
-          all_images_flag = false
-        }
-      }
-      if (files_count > 0 && all_images_flag) {
-        feedbackOK(document.getElementById("folder"));
-      }
-      else {
-        feedbackError(document.getElementById("folder"))
       }
 
     }, false);

@@ -322,7 +322,14 @@
         sissy.limitInput.value = args_limit;
         sissy.limitInput.dispatchEvent(new Event("change"));
       }
-      feedbackOK(document.getElementById("settings-import"))
+
+      var args_mantra = sissy.args["mantra"];
+      console.log(args_mantra)
+      if (args_mantra) {
+        sissy.mantraInput.value = args_mantra;
+        sissy.mantraInput.dispatchEvent(new Event("change"));
+      }
+
     }
 
     /*
@@ -384,7 +391,8 @@
     sissy.startButton = document.getElementById("start-button");
     sissy.startHelp = document.getElementById("start-help");
     sissy.tickSound = new Howl({ src: ["tick.mp3"] });
-    sissy.mantra = document.getElementById("mantra-input");
+    sissy.mantraInput = document.getElementById("mantra-input");
+    sissy.mantraValue = document.getElementById("mantra")
     sissy.settingsImport = document.getElementById("settings-import")
 
     /**
@@ -823,8 +831,8 @@
         clearStartHelp();
       }
     };
-    sissy.mantra.onchange = function (event) {
-      document.getElementById("mantra").innerText = event.target.value;
+    sissy.mantraInput.onchange = function (event) {
+      sissy.mantraValue.innerText = sissy.mantraInput.value;
       feedbackOK(document.getElementById("mantra-group"))
     }
     sissy.settingsImport.onchange = function (event) {

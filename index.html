@@ -324,9 +324,8 @@
       }
 
       var args_mantra = sissy.args["mantra"];
-      console.log(args_mantra)
       if (args_mantra) {
-        sissy.mantraInput.value = args_mantra;
+        sissy.mantraInput.value = decodeURI(args_mantra);
         sissy.mantraInput.dispatchEvent(new Event("change"));
       }
 

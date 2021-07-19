@@ -458,6 +458,7 @@
     }
 
     function updateStartHelp() {
+      console.log("test!")
       if (sissy.urls && sissy.limitValue) {
         var imagesPerSecond = sissy.beats / sissy.nextValue / 60;
         if (sissy.limitValue == 0) {
@@ -489,6 +490,7 @@
           }
           if (files_count > 0 && all_images_flag) {
             feedbackOK(document.getElementById("folder"));
+            updateStartHelp()
           }
           else {
             feedbackError(document.getElementById("folder"))
